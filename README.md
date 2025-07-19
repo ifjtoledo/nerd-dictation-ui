@@ -1,4 +1,4 @@
-# 🧠 nerd-dictation-ui
+# nerd-dictation-ui
 
 A graphical and productivity-oriented interface for [nerd-dictation](https://github.com/ideasman42/nerd-dictation), designed to reduce friction and provide an intuitive voice dictation experience on Linux systems.
 
