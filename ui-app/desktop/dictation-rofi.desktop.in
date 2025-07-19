@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=Voice Dictation
 Comment=Start voice dictation with nerd-dictation and Rofi
-Exec=__SCRIPT_PATH__
+Exec=init-nerd-dictation
 Icon=__ICON_PATH__
 Terminal=false
 Type=Application

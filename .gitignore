@@ -1,0 +1,27 @@
+# Byte-compiled / cached files
+__pycache__/
+*.py[cod]
+
+# OS and editor junk
+.DS_Store
+Thumbs.db
+*.swp
+
+# Logs
+*.log
+.cache/
+
+# Python virtualenv
+venv/
+.env/
+
+# Vosk models (pesados)
+vosk-model-*/
+
+# Rofi temporales
+/tmp/rofi-*.log
+
+# Instalados en local
+~/.local/*
+# Models
+src/

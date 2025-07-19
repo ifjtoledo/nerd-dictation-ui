@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Detect root of the project (2 levels above this script)
+# ========= Configuration =========
 ROOT_DIR="$(dirname "$(realpath "$0")")/../.."
 
 SCRIPT_PATH="$ROOT_DIR/ui-app/scripts/dictation-rofi.sh"
@@ -9,39 +9,43 @@ TEMPLATE_PATH="$ROOT_DIR/ui-app/desktop/dictation-rofi.desktop.in"
 DESKTOP_OUT="$HOME/.local/share/applications/dictation-rofi.desktop"
 BIN_NAME="init-nerd-dictation"
 BIN_TARGET="$HOME/.local/bin/$BIN_NAME"
+ICON_NAME="dictation-rofi"  # without extension
 
-# Ensure dependencies
+# ========= Dependencies =========
 echo "📦 Ensuring dependencies..."
 if ! command -v rofi >/dev/null 2>&1; then
     echo "Installing rofi..."
     sudo apt update && sudo apt install -y rofi
 fi
 
-# Ensure local bin is in PATH
+# ========= Ensure PATH =========
 if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
     echo "⚠️ ~/.local/bin is not in your PATH. Adding it temporarily."
-    echo "💡 Add it permanently with: echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc"
+    echo "💡 Add it permanently with: echo 'export PATH=\"\$HOME/.local/bin:\$PATH\"' >> ~/.bashrc"
     export PATH="$HOME/.local/bin:$PATH"
 fi
 
-# Make script executable
-chmod +x "$SCRIPT_PATH"
-
-# Copy icon
+# ========= Prepare folders =========
 mkdir -p "$HOME/.local/share/icons"
-cp "$ICON_PATH" "$HOME/.local/share/icons/"
-
-# Generate .desktop entry
 mkdir -p "$HOME/.local/share/applications"
-sed "s|__SCRIPT_PATH__|$SCRIPT_PATH|g; s|__ICON_PATH__|$HOME/.local/share/icons/$(basename "$ICON_PATH")|g" "$TEMPLATE_PATH" > "$DESKTOP_OUT"
-
-# Install global launcher script
 mkdir -p "$HOME/.local/bin"
-cp "$SCRIPT_PATH" "$BIN_TARGET"
-chmod +x "$BIN_TARGET"
 
+# ========= Install icon =========
+cp "$ICON_PATH" "$HOME/.local/share/icons/$ICON_NAME.png"
+
+# ========= Install desktop entry =========
+sed \
+  -e "s|__SCRIPT_PATH__|$SCRIPT_PATH|g" \
+  -e "s|__ICON_PATH__|$ICON_NAME|g" \
+  "$TEMPLATE_PATH" > "$DESKTOP_OUT"
+
+# ========= Install launcher alias =========
+cp "$SCRIPT_PATH" "$BIN_TARGET"
+chmod +x "$SCRIPT_PATH" "$BIN_TARGET"
+
+# ========= Final message =========
 echo ""
 echo "✅ Installed desktop entry to $DESKTOP_OUT"
-echo "🚀 You can now run 'init-nerd-dictation' from any terminal"
+echo "🚀 You can now run '$BIN_NAME' from any terminal"
 echo "🎙️ Or launch 'Voice Dictation' from your app menu"
 

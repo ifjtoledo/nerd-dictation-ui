@@ -23,18 +23,43 @@ fi
 
 # ========= Rofi menu =========
 
-choice=$(echo -e "🎙️ Start dictation (standard)\n🧠 Continuous mode\n🔇 Defer output (STDOUT)\n⏳ Timeout 5s\n🔊 Verbose\n🎯 Wayland: dotool\n✋ Stop dictation\n⏸️ Suspend dictation\n▶️ Resume dictation\n❌ Cancel dictation" | rofi -dmenu -p "Voice Dictation")
+choice=$(echo -e "🗣️ Fast dictation (no rephrase)\n✋ Stop dictation\n🎙️ Start dictation (standard)\n⏸️ Suspend dictation\n▶️ Resume dictation\n❌ Cancel dictation\n🧠 Continuous mode\n🔇 Defer output (STDOUT)\n⏳ Timeout 5s\n🔊 Verbose\n🎯 Wayland: dotool" | rofi -dmenu -p "Voice Dictation")
 
 case "$choice" in
+  "🗣️ Fast dictation (no rephrase)")
+    # 🚀 Minimal processing, faster response, fewer corrections
+    "$DICT_BIN" begin \
+      --output SIMULATE_INPUT \
+      --numbers-as-digits \
+      --timeout 3 \
+      --delay-exit 0.2 &
+    ;;
+
+  "✋ Stop dictation")
+    "$DICT_BIN" end
+    ;;
+
   "🎙️ Start dictation (standard)")
     # ✅ Add timeout so it ends automatically
     "$DICT_BIN" begin --punctuate-from-previous-timeout 1.0 \
       --full-sentence --numbers-as-digits \
       --output SIMULATE_INPUT \
-      --timeout 5 \
+      --timeout 3 \
       --delay-exit 1.5 &
     ;;
 
+  "⏸️ Suspend dictation")
+    "$DICT_BIN" suspend
+    ;;
+
+  "▶️ Resume dictation")
+    "$DICT_BIN" resume
+    ;;
+
+  "❌ Cancel dictation")
+    "$DICT_BIN" cancel
+    ;;
+    
   "🧠 Continuous mode")
     # ❌ Should NOT have timeout (continuous means stay on indefinitely)
     "$DICT_BIN" begin --punctuate-from-previous-timeout 1.0 \
@@ -82,21 +107,7 @@ case "$choice" in
       --delay-exit 1.5 &
     ;;
 
-  "✋ Stop dictation")
-    "$DICT_BIN" end
-    ;;
-
-  "⏸️ Suspend dictation")
-    "$DICT_BIN" suspend
-    ;;
-
-  "▶️ Resume dictation")
-    "$DICT_BIN" resume
-    ;;
-
-  "❌ Cancel dictation")
-    "$DICT_BIN" cancel
-    ;;
+ 
 esac
 
 
