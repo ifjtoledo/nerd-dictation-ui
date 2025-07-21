@@ -1,0 +1,119 @@
+🧠 INSTALACIÓN Y USO DE DICTADO LOCAL CON WHISPER.CPP + ROFI (O ATAJO)
+
+────────────────────────────────────────────────────────────────────────────
+REQUISITOS BÁSICOS
+────────────────────────────────────────────────────────────────────────────
+Sistema operativo: Linux (Pop!_OS, Ubuntu, Debian, etc.)
+Dependencias:
+
+    sudo apt update
+    sudo apt install git build-essential cmake xclip alsa-utils ffmpeg
+
+────────────────────────────────────────────────────────────────────────────
+INSTALACIÓN DE WHISPER.CPP
+────────────────────────────────────────────────────────────────────────────
+cd ~
+git clone https://github.com/ggerganov/whisper.cpp
+cd whisper.cpp
+make
+
+# Descargar el modelo MEDIUM (~1.4 GB)
+./models/download-ggml-model.sh medium
+
+────────────────────────────────────────────────────────────────────────────
+SCRIPT DE DICTADO LIGERO
+────────────────────────────────────────────────────────────────────────────
+#!/bin/bash
+
+# 📁 Directorio destino
+DEST="$HOME/.local/bin"
+mkdir -p "$DEST"
+
+# ✅ Script principal de dictado: dicta-local.sh
+cat > "$DEST/dicta-local.sh" << 'EOF'
+#!/bin/bash
+
+# 🗃️ Archivos temporales
+AUDIO="/tmp/dictado.wav"
+MODEL="$HOME/whisper.cpp/models/ggml-medium.bin"
+OUTPUT_TXT="$AUDIO.txt"
+DURACION=${1:-7}  # Valor por defecto: 7 segundos
+
+# 🎙️ Grabar audio
+arecord -f cd -d "$DURACION" "$AUDIO"
+
+# 🧠 Transcribir
+"$HOME"/whisper.cpp/build/bin/whisper-cli -m "$MODEL" -f "$AUDIO" -otxt
+
+# 📋 Copiar al portapapeles
+cat "$OUTPUT_TXT" | xclip -selection clipboard
+
+# 🧹 Eliminar archivos temporales
+rm -f "$AUDIO" "$OUTPUT_TXT"
+
+# ✅ Notificar
+notify-send "🗣️ Transcripción lista ($DURACION seg.) y copiada al portapapeles"
+EOF
+
+# ✅ Script de menú con Rofi: dictation.sh
+cat > "$DEST/dictation.sh" << 'EOF'
+#!/bin/bash
+
+# 🎛️ Opciones de duración
+chosen=$(echo -e "7 segundos (por defecto)\n14 segundos\n35 segundos\n56 segundos\n❌ Cancelar" | \
+         rofi -dmenu -p "🗣️ Elige duración de dictado")
+
+case "$chosen" in
+    "7 segundos (por defecto)")
+        dicta-local.sh 7
+        ;;
+    "14 segundos")
+        dicta-local.sh 14
+        ;;
+    "35 segundos")
+        dicta-local.sh 35
+        ;;
+    "56 segundos")
+        dicta-local.sh 56
+        ;;
+    *)
+        echo "Cancelado."
+        ;;
+esac
+EOF
+
+# 🔓 Permisos de ejecución
+chmod +x "$DEST/dicta-local.sh"
+chmod +x "$DEST/dictation.sh"
+
+# 📣 Mensaje final
+echo "✅ Scripts instalados correctamente en ~/.local/bin/"
+echo "⚡ Ejecuta 'dictation.sh' desde cualquier parte para iniciar dictado con menú"
+
+
+────────────────────────────────────────────────────────────────────────────
+INTEGRACIÓN CON ATALHO DE TECLADO O ROFI
+────────────────────────────────────────────────────────────────────────────
+Puedes crear un archivo adicional `dictation.sh` que llame al anterior y sea más fácil de ejecutar con Rofi:
+
+~/bin/dictation.sh
+#!/bin/bash
+bash ~/bin/dicta.sh
+
+chmod +x ~/bin/dictation.sh
+
+────────────────────────────────────────────────────────────────────────────
+SUGERENCIAS
+────────────────────────────────────────────────────────────────────────────
+- Asigna un atajo de teclado (por ejemplo F12) para ejecutar `dictation.sh`.
+- También puedes usar `espanso`, `autokey-gtk` o `rofi` para llamarlo.
+- Si necesitas más duración, cambia `-d 8` por los segundos deseados.
+
+────────────────────────────────────────────────────────────────────────────
+RESULTADO
+────────────────────────────────────────────────────────────────────────────
+🎉 Cada vez que ejecutes el script:
+- Se grabarán 8 segundos de voz
+- Se transcribirá con Whisper.cpp
+- El texto se copiará automáticamente al portapapeles
+- Verás una notificación de éxito

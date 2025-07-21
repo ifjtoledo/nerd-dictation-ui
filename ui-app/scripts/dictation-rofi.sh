@@ -23,29 +23,30 @@ fi
 
 # ========= Rofi menu =========
 
-choice=$(echo -e "🗣️ Fast dictation (no rephrase)\n✋ Stop dictation\n🎙️ Start dictation (standard)\n⏸️ Suspend dictation\n▶️ Resume dictation\n❌ Cancel dictation\n🧠 Continuous mode\n🔇 Defer output (STDOUT)\n⏳ Timeout 5s\n🔊 Verbose\n🎯 Wayland: dotool" | rofi -dmenu -p "Voice Dictation")
+choice=$(echo -e "🎙️ Start dictation (standard)\n✋ Stop dictation\n🗣️ Fast dictation (no rephrase)\n⏸️ Suspend dictation\n▶️ Resume dictation\n❌ Cancel dictation\n🧠 Continuous mode\n🔇 Defer output (STDOUT)\n⏳ Timeout 5s\n🔊 Verbose\n🎯 Wayland: dotool" | rofi -dmenu -p "Voice Dictation")
 
 case "$choice" in
-  "🗣️ Fast dictation (no rephrase)")
-    # 🚀 Minimal processing, faster response, fewer corrections
-    "$DICT_BIN" begin \
+"🎙️ Start dictation (standard)")
+    # ✅ Add timeout so it ends automatically
+    "$DICT_BIN" begin --punctuate-from-previous-timeout 1.0 \
+      --full-sentence --numbers-as-digits \
       --output SIMULATE_INPUT \
-      --numbers-as-digits \
-      --timeout 3 \
-      --delay-exit 0.2 &
+      --timeout 2 \
+      --delay-exit 1.5 &
     ;;
+ 
 
   "✋ Stop dictation")
     "$DICT_BIN" end
     ;;
 
-  "🎙️ Start dictation (standard)")
-    # ✅ Add timeout so it ends automatically
-    "$DICT_BIN" begin --punctuate-from-previous-timeout 1.0 \
-      --full-sentence --numbers-as-digits \
+   "🗣️ Fast dictation (no rephrase)")
+    # 🚀 Minimal processing, faster response, fewer corrections
+    "$DICT_BIN" begin \
       --output SIMULATE_INPUT \
-      --timeout 3 \
-      --delay-exit 1.5 &
+      --numbers-as-digits \
+      --timeout 2 \
+      --delay-exit 0.2 &
     ;;
 
   "⏸️ Suspend dictation")
