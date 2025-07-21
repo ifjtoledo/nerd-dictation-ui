@@ -38,7 +38,7 @@ else
 fi
 
 /usr/bin/cat "$OUTPUT_TXT" | /usr/bin/xclip -selection clipboard
-/usr/bin/paplay "$HOME/Music/ding.wav" 2>/dev/null || /usr/bin/aplay "$HOME/Music/ding.wav" 2>/dev/null
+#/usr/bin/paplay "$HOME/Music/ding.wav" 2>/dev/null || /usr/bin/aplay "$HOME/Music/ding.wav" 2>/dev/null
 /usr/bin/xdotool key --clearmodifiers ctrl+v
 /bin/rm -f "$AUDIO" "$OUTPUT_TXT"
 EOF
@@ -52,9 +52,9 @@ declare -A MODELS
 MODELS["7s - Chico"]="$MODELDIR/ggml-base.en.bin|7"
 MODELS["7s - Mediano"]="$MODELDIR/ggml-small.en.bin|7"
 MODELS["7s - Grande"]="$MODELDIR/ggml-medium.en.bin|7"
-MODELS["14s - Chico"]="$MODELDIR/ggml-base.bin|14"
-MODELS["14s - Mediano"]="$MODELDIR/ggml-small.bin|14"
-MODELS["14s - Grande"]="$MODELDIR/ggml-medium.bin|14"
+MODELS["14s - Chico"]="$MODELDIR/ggml-base.en.bin|14"
+MODELS["14s - Mediano"]="$MODELDIR/ggml-small.en.bin|14"
+MODELS["14s - Grande"]="$MODELDIR/ggml-medium.en.bin|14"
 MODELS["28s - Chico"]="$MODELDIR/ggml-base.en.bin|28"
 MODELS["28s - Mediano"]="$MODELDIR/ggml-small.en.bin|28"
 MODELS["28s - Grande"]="$MODELDIR/ggml-medium.en.bin|28"

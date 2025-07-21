@@ -44,7 +44,7 @@ else
 fi
 
 /usr/bin/cat "$OUTPUT_TXT" | /usr/bin/xclip -selection clipboard
-/usr/bin/paplay "$HOME/Music/ding.wav" 2>/dev/null || /usr/bin/aplay "$HOME/Music/ding.wav" 2>/dev/null
+#/usr/bin/paplay "$HOME/Music/ding.wav" 2>/dev/null || /usr/bin/aplay "$HOME/Music/ding.wav" 2>/dev/null
 /usr/bin/xdotool key --clearmodifiers ctrl+v
 /bin/rm -f "$AUDIO" "$OUTPUT_TXT"
 EOF
