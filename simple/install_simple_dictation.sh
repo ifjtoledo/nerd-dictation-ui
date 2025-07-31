@@ -168,16 +168,16 @@ cat > "$DEST/dictation.sh" << 'EOF'
 
 MODELDIR="$HOME/whisper.cpp/models"
 declare -A MODELS
-MODELS["3s - Small.en"]="$MODELDIR/ggml-small.en.bin|3"
 MODELS["7s - Small.en"]="$MODELDIR/ggml-small.en.bin|7"
 MODELS["14s - Small.en"]="$MODELDIR/ggml-small.en.bin|14"
+MODELS["3s - Small.en"]="$MODELDIR/ggml-small.en.bin|3"
 MODELS["28s - Small.en"]="$MODELDIR/ggml-small.en.bin|28"
 MODELS["56s - Small.en"]="$MODELDIR/ggml-small.en.bin|56"
 MODELS["7s - Large.en"]="$MODELDIR/ggml-large-v3.bin|7"
 MODELS["14s - Large.en"]="$MODELDIR/ggml-large-v3.bin|14"
 MODELS["28s - Large.en"]="$MODELDIR/ggml-large-v3.bin|28"
 MODELS["56s - Large.en"]="$MODELDIR/ggml-large-v3.bin|56"
-chosen=$(echo -e "3s - Small.en\n7s - Small.en\n14s - Small.en\n28s - Small.en\n56s - Small.en\n7s - Large.en\n14s - Large.en\n28s - Large.en\n56s - Large.en\n❌ Cancelar" | rofi -dmenu -p "🇺🇸 Dictado en inglés (elige modelo y duración):")
+chosen=$(echo -e "7s - Small.en\n14s - Small.en\n3s - Small.en\n28s - Small.en\n56s - Small.en\n7s - Large.en\n14s - Large.en\n28s - Large.en\n56s - Large.en\n❌ Cancelar" | rofi -dmenu -p "🇺🇸 Dictado en inglés (elige modelo y duración):")
 
 [[ "$chosen" == "❌ Cancelar" || -z "$chosen" ]] && echo "Cancelado." && exit 1
 

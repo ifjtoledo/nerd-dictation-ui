@@ -25,3 +25,7 @@ vosk-model-*/
 ~/.local/*
 # Models
 src/
+# history vscode
+.history/
+# Node modules
+node_modules/
